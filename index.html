@@ -626,6 +626,20 @@ footer .wrap { display: grid; gap: 6px; }
        "why": "Defaults shown. Lower the distance for shorter swipes. `workspace_swipe_forever` lets one swipe pass several workspaces.",
        "priority": "optional",
        "code": "gestures {\n    workspace_swipe_distance = 300\n    workspace_swipe_cancel_ratio = 0.5\n    workspace_swipe_forever = false\n}"
+      },
+      {
+       "setting": "OPTIONAL: press with two fingers to right-click",
+       "where": "~/.config/hypr/input.conf → input → touchpad",
+       "why": "`clickfinger_behavior = false` today, so a physical press is a left click everywhere except the bottom-right corner. Turn it on and 1, 2 or 3 fingers pressing anywhere give left, right and middle click, like macOS. Tapping already follows the finger count because `tap-to-click` is on.",
+       "priority": "optional",
+       "code": "touchpad {\n    clickfinger_behavior = true\n}"
+      },
+      {
+       "setting": "OPTIONAL: three-finger drag (the macOS habit)",
+       "where": "~/.config/hypr/input.conf → input → touchpad",
+       "why": "`drag_3fg` is `0` (off); `1` means three fingers, `2` means four. Three fingers then belong to dragging, so move your workspace swipe to four fingers: `gesture = 4, horizontal, workspace`.",
+       "priority": "optional",
+       "code": "touchpad {\n    drag_3fg = 1\n}\ngesture = 4, horizontal, workspace"
       }
      ]
     },
@@ -930,15 +944,6 @@ footer .wrap { display: grid; gap: 6px; }
        ],
        "essential": false,
        "source": "config"
-      },
-      {
-       "action": "Swipe between workspaces",
-       "keys": [
-        "gesture: 3-finger horizontal swipe"
-       ],
-       "essential": false,
-       "source": "config",
-       "note": "`gesture = 3, horizontal, workspace` in `input.conf`. The view follows your fingers."
       }
      ]
     },
@@ -1849,6 +1854,55 @@ footer .wrap { display: grid; gap: 6px; }
        "note": "Closes every Firefox window."
       }
      ]
+    },
+    {
+     "group": "Go back (page, tab, folder)",
+     "items": [
+      {
+       "action": "Back a page",
+       "keys": [
+        "Alt + Left"
+       ],
+       "essential": true,
+       "source": "official",
+       "note": "Firefox. On the trackpad: a 2-finger swipe left."
+      },
+      {
+       "action": "Forward a page",
+       "keys": [
+        "Alt + Right"
+       ],
+       "essential": false,
+       "source": "official"
+      },
+      {
+       "action": "Previous tab (the one to the left)",
+       "keys": [
+        "Ctrl + Shift + Tab",
+        "Ctrl + PageUp"
+       ],
+       "essential": true,
+       "source": "official"
+      },
+      {
+       "action": "Back to the tab you came from",
+       "keys": [
+        "Ctrl + Tab"
+       ],
+       "essential": false,
+       "source": "official",
+       "note": "Only with Firefox Settings → General → Ctrl+Tab cycles through tabs in recently used order turned on. Otherwise it just moves one tab right."
+      },
+      {
+       "action": "Reopen the tab you just closed",
+       "keys": [
+        "Ctrl + Shift + T"
+       ],
+       "essential": true,
+       "source": "official",
+       "note": "Press it again for the one before that."
+      }
+     ]
     }
    ],
    "typing": [
@@ -2077,7 +2131,8 @@ footer .wrap { display: grid; gap: 6px; }
     "[[Super + .]] has the comment \"Clipboard manager\" in `keybindings.conf`, but it opens symbols. Clipboard history is [[Super + Ctrl + V]]. The `cliphist` lines in `autostart.conf` run, but Walker reads Elephant's own history.",
     "Scrolling with Super held uses `e+1` / `e-1`: it skips empty workspaces, so it does not stop on every number.",
     "The cheatsheet ([[Super + /]]) is hand-written and already out of date (old DP-1/DP-2 workspace map, missing [[Super + .]]). Update it whenever you change a bind.",
-    "Idle rules in `hypridle.conf`: lock after 5 minutes, screens off after 10, suspend after 20 minutes only on battery. On AC power hypridle never suspends the laptop."
+    "Idle rules in `hypridle.conf`: lock after 5 minutes, screens off after 10, suspend after 20 minutes only on battery. On AC power hypridle never suspends the laptop.",
+    "`disable_while_typing = true` mutes the touchpad for a moment after every keystroke. A click that seems to get lost while you type is this setting."
    ],
    "sources": [
     {
@@ -2203,8 +2258,165 @@ footer .wrap { display: grid; gap: 6px; }
     {
      "title": "mako(5) manual",
      "url": "https://github.com/emersion/mako/blob/master/doc/mako.5.scd"
+    },
+    {
+     "title": "Mozilla Bugzilla 1790580: two-finger swipe for history back and forward on Wayland (Firefox 106)",
+     "url": "https://bugzilla.mozilla.org/show_bug.cgi?id=1790580"
     }
-   ]
+   ],
+   "trackpad": {
+    "intro": "Your pad is four lines in `~/.config/hypr/input.conf`: `natural_scroll = true`, `tap-to-click = true`, `disable_while_typing = true` and `gesture = 3, horizontal, workspace`. Everything below follows from those.",
+    "groups": [
+     {
+      "group": "Click and scroll",
+      "items": [
+       {
+        "action": "Click",
+        "keys": [
+         "gesture: 1-finger tap",
+         "gesture: press the pad"
+        ],
+        "essential": true,
+        "source": "config",
+        "note": "`tap-to-click = true`, so a light tap is already a left click."
+       },
+       {
+        "action": "Right-click (context menu)",
+        "keys": [
+         "gesture: 2-finger tap"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "With `tap-to-click` on, 1, 2 and 3 fingers tap left, right and middle click. Pressing the bottom-right corner of the pad is a right-click too."
+       },
+       {
+        "action": "Middle-click (paste the selection, open a link in a tab)",
+        "keys": [
+         "gesture: 3-finger tap"
+        ],
+        "essential": false,
+        "source": "official"
+       },
+       {
+        "action": "Scroll",
+        "keys": [
+         "gesture: 2-finger drag"
+        ],
+        "essential": true,
+        "source": "config",
+        "note": "`natural_scroll = true`: the content follows your fingers, like a phone. Hyprland's own default is `false`."
+       },
+       {
+        "action": "Zoom in a page",
+        "keys": [
+         "gesture: pinch or spread"
+        ],
+        "essential": false,
+        "source": "community",
+        "note": "Hyprland hands the pinch to the app. Firefox and most GTK apps zoom; others ignore it."
+       },
+       {
+        "action": "Drag and drop",
+        "keys": [
+         "gesture: tap, then drag without lifting"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "`tap-and-drag` is on by default. `drag_lock` is off, so lifting the finger drops the item."
+       }
+      ]
+     },
+     {
+      "group": "Windows and workspaces",
+      "items": [
+       {
+        "action": "Switch workspace",
+        "keys": [
+         "gesture: 3-finger horizontal swipe"
+        ],
+        "essential": true,
+        "source": "config",
+        "note": "`gesture = 3, horizontal, workspace`. The view follows your fingers. This is the habit the other three systems break."
+       },
+       {
+        "action": "Next or previous open workspace",
+        "keys": [
+         "gesture: Super + 2-finger scroll"
+        ],
+        "essential": false,
+        "source": "config",
+        "note": "`bind = $mainMod, mouse_down, workspace, e+1`. A two-finger scroll counts as the wheel, and `e` skips empty workspaces."
+       },
+       {
+        "action": "Move a window",
+        "keys": [
+         "gesture: Super + 1-finger drag"
+        ],
+        "essential": false,
+        "source": "config",
+        "note": "`bindm = $mainMod, mouse:272, movewindow`. Press the pad and drag, or tap and drag."
+       },
+       {
+        "action": "Resize a window",
+        "keys": [
+         "gesture: Super + press the bottom-right corner and drag"
+        ],
+        "essential": false,
+        "source": "config",
+        "note": "`bindm = $mainMod, mouse:273, resizewindow` needs a real right-button press, and a two-finger tap is not a press. Set `clickfinger_behavior = true` if you would rather press with two fingers anywhere on the pad."
+       },
+       {
+        "action": "Resize by dragging a window border",
+        "keys": [
+         "gesture: 1-finger drag on a window border"
+        ],
+        "essential": false,
+        "source": "config",
+        "note": "`resize_on_border = true` in `look.conf`."
+       },
+       {
+        "action": "See all windows at once",
+        "keys": [],
+        "essential": false,
+        "source": "config",
+        "note": "No gesture, and Hyprland has no built-in overview. The hyprexpo plug-in is in the optional binds below."
+       }
+      ]
+     },
+     {
+      "group": "Go back with the trackpad",
+      "items": [
+       {
+        "action": "Back a page (Firefox)",
+        "keys": [
+         "gesture: 2-finger swipe left"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "Firefox does this on Wayland with no setup (since Firefox 106; you run 156). Keyboard: [[Alt + Left]]."
+       },
+       {
+        "action": "Forward a page (Firefox)",
+        "keys": [
+         "gesture: 2-finger swipe right"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "Keyboard: [[Alt + Right]]."
+       },
+       {
+        "action": "Back a page (Chromium, Electron apps)",
+        "keys": [
+         "Alt + Left"
+        ],
+        "essential": false,
+        "source": "community",
+        "note": "No swipe there on Wayland, only the keys."
+       }
+      ]
+     }
+    ]
+   }
   },
   "windows": {
    "os": "windows",
@@ -2440,6 +2652,18 @@ footer .wrap { display: grid; gap: 6px; }
        "where": "Settings → Personalization → Text input → Customize Copilot key on keyboard",
        "why": "If your laptop has a Copilot key, you can point it to an app you use more, or to search.",
        "priority": "optional"
+      },
+      {
+       "setting": "Scrolling direction → Down motion scrolls up",
+       "where": "Settings → Bluetooth & devices → Touchpad → Scrolling direction",
+       "why": "Windows ships the opposite of your `natural_scroll = true`. This one setting makes the pad feel like Hyprland and macOS.",
+       "priority": "recommended"
+      },
+      {
+       "setting": "Three-finger taps → Middle mouse button",
+       "where": "Settings → Bluetooth & devices → Touchpad → Three-finger gestures → Taps",
+       "why": "A three-finger tap opens search by default. On Hyprland that tap is a middle click (paste the selection, open a link in a new tab), so this restores the habit. Microsoft's gesture page does not list the taps; the labels come from the Settings page itself.",
+       "priority": "optional"
       }
      ]
     },
@@ -2666,32 +2890,6 @@ footer .wrap { display: grid; gap: 6px; }
        "essential": false,
        "source": "official",
        "note": "App-level: browsers and Windows Terminal go full screen; in File Explorer it maximizes."
-      },
-      {
-       "action": "Show all open windows",
-       "keys": [
-        "gesture: 3-finger swipe up"
-       ],
-       "essential": false,
-       "source": "official",
-       "note": "Precision touchpad."
-      },
-      {
-       "action": "Show the desktop",
-       "keys": [
-        "gesture: 3-finger swipe down"
-       ],
-       "essential": false,
-       "source": "official"
-      },
-      {
-       "action": "Switch between apps",
-       "keys": [
-        "gesture: 3-finger swipe left or right"
-       ],
-       "essential": false,
-       "source": "official",
-       "note": "Default. You can change it to switch desktops (see Configure)."
       }
      ]
     },
@@ -2740,15 +2938,6 @@ footer .wrap { display: grid; gap: 6px; }
        "essential": false,
        "source": "official",
        "note": "Its windows move to the next desktop. No window is closed."
-      },
-      {
-       "action": "Switch desktops with the touchpad",
-       "keys": [
-        "gesture: 4-finger swipe left or right"
-       ],
-       "essential": false,
-       "source": "official",
-       "note": "Change three-finger swipes to desktops to match Hyprland (see Configure)."
       }
      ]
     },
@@ -3602,6 +3791,64 @@ footer .wrap { display: grid; gap: 6px; }
        "source": "official"
       }
      ]
+    },
+    {
+     "group": "Go back (page, tab, folder)",
+     "items": [
+      {
+       "action": "Back a page",
+       "keys": [
+        "Alt + Left"
+       ],
+       "essential": true,
+       "source": "official",
+       "note": "Edge, Chrome and Firefox. On the trackpad: a 2-finger swipe left."
+      },
+      {
+       "action": "Forward a page",
+       "keys": [
+        "Alt + Right"
+       ],
+       "essential": false,
+       "source": "official"
+      },
+      {
+       "action": "Previous tab (the one to the left)",
+       "keys": [
+        "Ctrl + Shift + Tab",
+        "Ctrl + PageUp"
+       ],
+       "essential": true,
+       "source": "official"
+      },
+      {
+       "action": "Reopen the tab you just closed",
+       "keys": [
+        "Ctrl + Shift + T"
+       ],
+       "essential": true,
+       "source": "official"
+      },
+      {
+       "action": "Back in File Explorer",
+       "keys": [
+        "Alt + Left",
+        "Backspace"
+       ],
+       "essential": false,
+       "source": "official",
+       "note": "[[Alt + Up]] is the parent folder, which is not the same thing."
+      },
+      {
+       "action": "Back in Settings and most Store apps",
+       "keys": [
+        "Alt + Left"
+       ],
+       "essential": false,
+       "source": "community",
+       "note": "The same key as the back arrow in the top left corner."
+      }
+     ]
     }
    ],
    "typing": [
@@ -3795,7 +4042,9 @@ footer .wrap { display: grid; gap: 6px; }
     "Three-finger left and right swipes switch apps by default, not desktops. Desktops are four fingers, or change the setting.",
     "[[Alt + Space]] opens the native window menu, and PowerToys Run also uses it. Prefer Command Palette on [[Win + Alt + Space]].",
     "PowerToys Keyboard Manager cannot remap [[Win + L]] or [[Ctrl + Alt + Delete]], and remaps stop working when PowerToys is not running.",
-    "Work laptop: organization policies can disable toggles on the Settings → System → Advanced page and can block installs. If a setting is grey or missing, ask IT before trying workarounds."
+    "Work laptop: organization policies can disable toggles on the Settings → System → Advanced page and can block installs. If a setting is grey or missing, ask IT before trying workarounds.",
+    "The touchpad scrolls the opposite way to Hyprland and macOS until you change Settings → Bluetooth & devices → Touchpad → Scrolling direction → Down motion scrolls up.",
+    "Three fingers switch apps here, not desktops. Desktops are four fingers, or swap the two drop-downs in Touchpad settings."
    ],
    "sources": [
     {
@@ -3983,7 +4232,147 @@ footer .wrap { display: grid; gap: 6px; }
      "url": "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf"
     }
    ],
-   "shortVersion": "Windows 11 · 26H2"
+   "shortVersion": "Windows 11 · 26H2",
+   "trackpad": {
+    "intro": "Windows calls this a precision touchpad. Open Settings → Bluetooth & devices → Touchpad: if the three- and four-finger sections are there, your pad is a precision one and every gesture below is a drop-down you can change.",
+    "groups": [
+     {
+      "group": "Click and scroll",
+      "items": [
+       {
+        "action": "Select an item",
+        "keys": [
+         "gesture: 1-finger tap"
+        ],
+        "essential": true,
+        "source": "official"
+       },
+       {
+        "action": "Right-click (more commands)",
+        "keys": [
+         "gesture: 2-finger tap",
+         "gesture: press the lower-right corner"
+        ],
+        "essential": true,
+        "source": "official"
+       },
+       {
+        "action": "Scroll",
+        "keys": [
+         "gesture: 2-finger slide"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "Windows ships the direction opposite to your `natural_scroll = true`. Settings → Bluetooth & devices → Touchpad → Scrolling direction → Down motion scrolls up makes it match."
+       },
+       {
+        "action": "Zoom in or out",
+        "keys": [
+         "gesture: pinch together or spread apart"
+        ],
+        "essential": false,
+        "source": "official"
+       }
+      ]
+     },
+     {
+      "group": "Windows and desktops",
+      "items": [
+       {
+        "action": "Show all open windows (Task view)",
+        "keys": [
+         "gesture: 3-finger swipe up"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "The same view as [[Win + Tab]]."
+       },
+       {
+        "action": "Show the desktop",
+        "keys": [
+         "gesture: 3-finger swipe down"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "Swipe up again to bring the windows back. Keyboard: [[Win + D]]."
+       },
+       {
+        "action": "Switch between open apps or windows",
+        "keys": [
+         "gesture: 3-finger swipe left or right"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "Apps, not desktops. This is the trap coming from Hyprland, where three fingers change workspace."
+       },
+       {
+        "action": "Switch desktops",
+        "keys": [
+         "gesture: 4-finger swipe left or right"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "Your Hyprland three-finger swipe, one finger later. You can swap them: Three-finger gestures → Swipes → Switch desktops."
+       }
+      ]
+     },
+     {
+      "group": "Taps you can reassign",
+      "items": [
+       {
+        "action": "3-finger tap",
+        "keys": [
+         "gesture: 3-finger tap"
+        ],
+        "essential": false,
+        "source": "community",
+        "note": "Not in Microsoft's table. In Windows 11 it opens search; set it to Middle mouse button in Settings → Bluetooth & devices → Touchpad → Three-finger gestures → Taps."
+       },
+       {
+        "action": "4-finger tap",
+        "keys": [
+         "gesture: 4-finger tap"
+        ],
+        "essential": false,
+        "source": "community",
+        "note": "Opens the notification centre. Same place: Four-finger gestures → Taps."
+       }
+      ]
+     },
+     {
+      "group": "Go back with the trackpad",
+      "items": [
+       {
+        "action": "Back a page (Edge, Chrome, Firefox)",
+        "keys": [
+         "gesture: 2-finger swipe left"
+        ],
+        "essential": true,
+        "source": "community",
+        "note": "The browser does this, not Windows, so it works in browsers and not in File Explorer. Keyboard: [[Alt + Left]]."
+       },
+       {
+        "action": "Forward a page",
+        "keys": [
+         "gesture: 2-finger swipe right"
+        ],
+        "essential": false,
+        "source": "community"
+       },
+       {
+        "action": "Back in File Explorer",
+        "keys": [
+         "Alt + Left",
+         "Backspace"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "No gesture for this one. [[Alt + Up]] goes to the parent folder instead."
+       }
+      ]
+     }
+    ]
+   }
   },
   "macos": {
    "os": "macos",
@@ -4251,6 +4640,12 @@ footer .wrap { display: grid; gap: 6px; }
        "where": "System Settings → Trackpad → Point & Click → Tap to click",
        "why": "A light tap clicks. Your Hyprland `input.conf` has `tap-to-click = true`, so this matches it.",
        "priority": "optional"
+      },
+      {
+       "setting": "Swipe between pages → Scroll left or right with two fingers",
+       "where": "System Settings → Trackpad → More Gestures → Swipe between pages",
+       "why": "This is Back and Forward on the trackpad, system-wide. Keep it on two fingers so three or four stay free for Spaces.",
+       "priority": "recommended"
       }
      ]
     },
@@ -4723,15 +5118,6 @@ footer .wrap { display: grid; gap: 6px; }
        ],
        "essential": true,
        "source": "official"
-      },
-      {
-       "action": "Switch Space with the trackpad",
-       "keys": [
-        "gesture: 3- or 4-finger swipe left or right"
-       ],
-       "essential": false,
-       "source": "official",
-       "note": "Set three fingers in Trackpad settings to match Hyprland."
       },
       {
        "action": "Go to Desktop 1…9",
@@ -5481,6 +5867,64 @@ footer .wrap { display: grid; gap: 6px; }
        "note": "Terminal.app."
       }
      ]
+    },
+    {
+     "group": "Go back (page, tab, folder)",
+     "items": [
+      {
+       "action": "Back a page",
+       "keys": [
+        "Cmd + ["
+       ],
+       "essential": true,
+       "source": "official",
+       "note": "Every browser, Finder and System Settings. On the trackpad: a 2-finger swipe left. Inside a text field, [[Cmd + Left]] jumps to the start of the line instead."
+      },
+      {
+       "action": "Forward a page",
+       "keys": [
+        "Cmd + ]"
+       ],
+       "essential": false,
+       "source": "official"
+      },
+      {
+       "action": "Previous tab (the one to the left)",
+       "keys": [
+        "Control + Shift + Tab",
+        "Option + Cmd + Left"
+       ],
+       "essential": true,
+       "source": "official",
+       "note": "Note the [[Control]], not [[Cmd]]: tab cycling keeps the key you already use on Linux."
+      },
+      {
+       "action": "Reopen the tab you just closed",
+       "keys": [
+        "Shift + Cmd + T"
+       ],
+       "essential": true,
+       "source": "official"
+      },
+      {
+       "action": "Back in Finder",
+       "keys": [
+        "Cmd + ["
+       ],
+       "essential": false,
+       "source": "official",
+       "note": "[[Cmd + Up]] is the enclosing folder."
+      },
+      {
+       "action": "Previous app",
+       "keys": [
+        "Cmd + Tab"
+       ],
+       "essential": false,
+       "source": "official",
+       "note": "One press and release goes straight back to the app you came from."
+      }
+     ]
     }
    ],
    "typing": [
@@ -5648,7 +6092,8 @@ footer .wrap { display: grid; gap: 6px; }
     "The MacBook has no Home, End, Page Up or Page Down keys. [[Fn + Left]] and [[Fn + Right]] only scroll; to move the cursor to the line start or end use [[Cmd + Left]] and [[Cmd + Right]].",
     "[[Delete]] deletes to the left, like Backspace. Forward delete is [[Fn + Delete]].",
     "Your three-finger workspace swipe may be set to four fingers on the Mac. Set System Settings → Trackpad → More Gestures → Swipe between full-screen applications to three fingers.",
-    "With AeroSpace, native Spaces and AeroSpace workspaces are two different systems. Keep one Space per display and use [[Hyper + 1…9]], not [[Control + 1…9]]."
+    "With AeroSpace, native Spaces and AeroSpace workspaces are two different systems. Keep one Space per display and use [[Hyper + 1…9]], not [[Control + 1…9]].",
+    "Mission Control is a four-finger swipe up on recent macOS versions and three on older ones, and three-finger drag steals three fingers from Spaces. If a swipe does nothing, open System Settings → Trackpad → More Gestures and read the finger count there."
    ],
    "sources": [
     {
@@ -5920,7 +6365,176 @@ footer .wrap { display: grid; gap: 6px; }
      "url": "https://support.apple.com/guide/shortcuts-mac/apd163eb9f95"
     }
    ],
-   "shortVersion": "macOS 27"
+   "shortVersion": "macOS 27",
+   "trackpad": {
+    "intro": "System Settings → Trackpad has three tabs: Point & Click, Scroll & Zoom and More Gestures. Apple ships Tap to click and three-finger drag off, and one setting in More Gestures decides whether Mission Control and the Space swipe take three fingers or four, so open those tabs once.",
+    "groups": [
+     {
+      "group": "Click and scroll",
+      "items": [
+       {
+        "action": "Click",
+        "keys": [
+         "gesture: press the pad",
+         "gesture: 1-finger tap"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "Tap to click is off until you turn it on: System Settings → Trackpad → Point & Click."
+       },
+       {
+        "action": "Right-click (secondary click)",
+        "keys": [
+         "gesture: 2-finger click or tap"
+        ],
+        "essential": true,
+        "source": "official"
+       },
+       {
+        "action": "Scroll",
+        "keys": [
+         "gesture: 2-finger slide"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "Natural scrolling is on by default, so the content follows your fingers, like your `natural_scroll = true`."
+       },
+       {
+        "action": "Zoom in or out",
+        "keys": [
+         "gesture: pinch or spread"
+        ],
+        "essential": false,
+        "source": "official"
+       },
+       {
+        "action": "Smart zoom (fit a column or a PDF)",
+        "keys": [
+         "gesture: 2-finger double tap"
+        ],
+        "essential": false,
+        "source": "official"
+       },
+       {
+        "action": "Rotate a photo",
+        "keys": [
+         "gesture: turn two fingers around each other"
+        ],
+        "essential": false,
+        "source": "official"
+       },
+       {
+        "action": "Look up a word, or act on a date or address",
+        "keys": [
+         "gesture: 3-finger tap"
+        ],
+        "essential": false,
+        "source": "official"
+       },
+       {
+        "action": "Open Notification Centre",
+        "keys": [
+         "gesture: 2-finger swipe left from the right edge"
+        ],
+        "essential": false,
+        "source": "official"
+       },
+       {
+        "action": "Drag an item without pressing down",
+        "keys": [
+         "gesture: 3-finger drag"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "Off by default: System Settings → Accessibility → Pointer Control → Trackpad Options → Dragging style → Three Finger Drag. It takes three fingers away from Spaces, so move the Space swipe to four."
+       }
+      ]
+     },
+     {
+      "group": "Windows, Spaces and the desktop",
+      "items": [
+       {
+        "action": "Mission Control (all windows and Spaces)",
+        "keys": [
+         "gesture: 3- or 4-finger swipe up"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "The finger count follows System Settings → Trackpad → More Gestures, where Mission Control, App Exposé and the Space swipe share one setting. Keyboard: [[Control + Up]]."
+       },
+       {
+        "action": "App Exposé (all windows of this app)",
+        "keys": [
+         "gesture: 3- or 4-finger swipe down"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "Same finger count as Mission Control. Keyboard: [[Control + Down]]."
+       },
+       {
+        "action": "Switch Space or full-screen app",
+        "keys": [
+         "gesture: 3- or 4-finger swipe left or right"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "The closest thing to your workspace swipe. Pick the finger count in System Settings → Trackpad → More Gestures → Swipe between full-screen applications."
+       },
+       {
+        "action": "Show the desktop",
+        "keys": [
+         "gesture: spread your thumb and three fingers"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "Keyboard: [[Fn + H]]."
+       },
+       {
+        "action": "Show the Apps grid",
+        "keys": [
+         "gesture: pinch your thumb and three fingers"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "Apple renamed Launchpad to Apps. Keyboard: [[Fn + Shift + A]]."
+       },
+       {
+        "action": "Move a window",
+        "keys": [
+         "gesture: drag its title bar",
+         "gesture: Control + Cmd + drag anywhere in the window"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "The Control + Cmd drag needs the Terminal command in Configure. With three-finger drag on, drag the title bar with three fingers."
+       }
+      ]
+     },
+     {
+      "group": "Go back with the trackpad",
+      "items": [
+       {
+        "action": "Back a page",
+        "keys": [
+         "gesture: 2-finger swipe left"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "Apple calls it Swipe between pages, and it is system-wide: Safari, Chrome, Firefox, Finder, the App Store, System Settings. Keyboard: [[Cmd + []]."
+       },
+       {
+        "action": "Forward a page",
+        "keys": [
+         "gesture: 2-finger swipe right"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "Keyboard: `Cmd + ]`."
+       }
+      ]
+     }
+    ]
+   }
   },
   "dex": {
    "os": "dex",
@@ -6206,6 +6820,18 @@ footer .wrap { display: grid; gap: 6px; }
        "where": "On the keyboard: press [[Fn + Space]]",
        "why": "Turn the pad off during long typing if your palms hit it.",
        "priority": "optional"
+      },
+      {
+       "setting": "Scroll direction (Reverse scrolling)",
+       "where": "Settings → General management → Mouse and trackpad",
+       "why": "Off by default, which already matches your `natural_scroll = true`: the content follows your fingers. Google documents the same options under Settings → System → Touchpad on stock Android.",
+       "priority": "recommended"
+      },
+      {
+       "setting": "Check what three fingers do",
+       "where": "Settings → General management → Mouse and trackpad",
+       "why": "Samsung and Android keep moving these. In DeX a three-finger swipe up opens Recents and a three-finger tap is Back; in tablet mode a three-finger swipe sideways is Back. If a gesture does nothing, look here first.",
+       "priority": "recommended"
       }
      ]
     },
@@ -6837,80 +7463,59 @@ footer .wrap { display: grid; gap: 6px; }
      ]
     },
     {
-     "group": "Trackpad gestures",
+     "group": "Go back (page, tab, app)",
      "items": [
       {
-       "action": "Click",
+       "action": "Back anywhere in the system",
        "keys": [
-        "gesture: click or tap the pad"
-       ],
-       "essential": false,
-       "source": "official"
-      },
-      {
-       "action": "Right-click (context menu)",
-       "keys": [
-        "gesture: 2-finger tap"
-       ],
-       "essential": true,
-       "source": "official"
-      },
-      {
-       "action": "Scroll",
-       "keys": [
-        "gesture: 2-finger drag"
-       ],
-       "essential": true,
-       "source": "official"
-      },
-      {
-       "action": "Zoom",
-       "keys": [
-        "gesture: pinch or spread"
-       ],
-       "essential": false,
-       "source": "official"
-      },
-      {
-       "action": "Recents",
-       "keys": [
-        "gesture: 3-finger swipe up"
-       ],
-       "essential": true,
-       "source": "official"
-      },
-      {
-       "action": "Home",
-       "keys": [
-        "gesture: 3-finger swipe down"
-       ],
-       "essential": false,
-       "source": "official"
-      },
-      {
-       "action": "Switch apps",
-       "keys": [
-        "gesture: 3-finger swipe left or right"
+        "Cmd + Backspace",
+        "Cmd + Left"
        ],
        "essential": true,
        "source": "official",
-       "note": "On Hyprland this gesture changes workspace. Here it changes app."
+       "note": "Samsung's list calls this WIN + Backspace; on this keyboard that key is [[Cmd]]. On the trackpad: a 3-finger tap."
       },
       {
-       "action": "Back",
+       "action": "Back a page in Chrome",
        "keys": [
-        "gesture: 3-finger tap"
+        "Alt + Left"
+       ],
+       "essential": true,
+       "source": "official",
+       "note": "Page history, not the system Back."
+      },
+      {
+       "action": "Forward a page in Chrome",
+       "keys": [
+        "Alt + Right"
        ],
        "essential": false,
        "source": "official"
       },
       {
-       "action": "Drag an item",
+       "action": "Previous tab (the one to the left)",
        "keys": [
-        "gesture: press, hold and drag"
+        "Ctrl + Shift + Tab"
+       ],
+       "essential": true,
+       "source": "official"
+      },
+      {
+       "action": "Reopen the tab you just closed",
+       "keys": [
+        "Ctrl + Shift + T"
        ],
        "essential": false,
        "source": "official"
+      },
+      {
+       "action": "Previous app",
+       "keys": [
+        "Alt + Tab"
+       ],
+       "essential": false,
+       "source": "official",
+       "note": "Hold [[Alt]] to pick from the list."
       }
      ]
     }
@@ -7084,7 +7689,8 @@ footer .wrap { display: grid; gap: 6px; }
     "Taskbar auto-hide is not available on tablets in One UI 8.5 (phones got it). Reports say One UI 9 adds it for tablets. Until then, use the Full screen button or the NavStar button in power-ups.",
     "Some apps are phone-shaped, do not resize, or reload when you resize them. Use the web version of a tool when its Android app is poor.",
     "Samsung documents no way to change the DeX system shortcuts. Customize keys can only remap some keys and set app shortcuts.",
-    "One UI 9 is coming to this tablet. It may change shortcuts. Check [[Cmd + /]] again after the update."
+    "One UI 9 is coming to this tablet. It may change shortcuts. Check [[Cmd + /]] again after the update.",
+    "Three-finger gestures are not the same in DeX and in tablet mode: in DeX, swipe up is Recents and a three-finger tap is Back; in tablet mode, a three-finger swipe sideways is Back and swipe up is Home."
    ],
    "sources": [
     {
@@ -7274,9 +7880,178 @@ footer .wrap { display: grid; gap: 6px; }
     {
      "title": "Samsung: Use the screen recorder",
      "url": "https://www.samsung.com/us/support/answer/ANS00084187"
+    },
+    {
+     "title": "Android Authority: Android touchpad three-finger gestures and the three-finger tap setting (teardown, January 2025)",
+     "url": "https://www.androidauthority.com/android-three-tap-touchpad-gesture-3513024/"
     }
    ],
-   "shortVersion": "One UI 8.5"
+   "shortVersion": "One UI 8.5",
+   "trackpad": {
+    "intro": "The pad on the Book Cover Keyboard works in DeX and in tablet mode, but three-finger gestures do different things in each. [[Fn + Space]] turns the pad off while you type.",
+    "groups": [
+     {
+      "group": "Click and scroll",
+      "items": [
+       {
+        "action": "Click",
+        "keys": [
+         "gesture: click or tap the pad"
+        ],
+        "essential": true,
+        "source": "official"
+       },
+       {
+        "action": "Right-click (context menu)",
+        "keys": [
+         "gesture: 2-finger tap"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "Android can also put the right-click in the bottom-right corner of the pad: Settings → General management → Mouse and trackpad."
+       },
+       {
+        "action": "Scroll",
+        "keys": [
+         "gesture: 2-finger drag"
+        ],
+        "essential": true,
+        "source": "official",
+        "note": "The content follows your fingers, like your `natural_scroll = true`. Reverse scrolling is the setting that flips it."
+       },
+       {
+        "action": "Zoom",
+        "keys": [
+         "gesture: pinch or spread"
+        ],
+        "essential": false,
+        "source": "community",
+        "note": "The app decides. Chrome and Gallery zoom; some apps ignore the pinch."
+       },
+       {
+        "action": "Drag an item",
+        "keys": [
+         "gesture: press, hold and drag"
+        ],
+        "essential": false,
+        "source": "official"
+       },
+       {
+        "action": "Turn the pad off or on",
+        "keys": [
+         "Fn + Space"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "The pad sits right under your palms, so this is worth remembering."
+       }
+      ]
+     },
+     {
+      "group": "DeX mode: three fingers",
+      "items": [
+       {
+        "action": "Recents (all open apps)",
+        "keys": [
+         "gesture: 3-finger swipe up"
+        ],
+        "essential": true,
+        "source": "community",
+        "note": "Recents is also where DeX desktops live. Keyboard: [[Cmd + Tab]]."
+       },
+       {
+        "action": "Home",
+        "keys": [
+         "gesture: 3-finger swipe down"
+        ],
+        "essential": false,
+        "source": "community",
+        "note": "Keyboard: [[Cmd + Enter]]."
+       },
+       {
+        "action": "Switch apps",
+        "keys": [
+         "gesture: 3-finger swipe left or right"
+        ],
+        "essential": true,
+        "source": "community",
+        "note": "Apps, not desktops. DeX desktops only change from Recents."
+       },
+       {
+        "action": "Back",
+        "keys": [
+         "gesture: 3-finger tap"
+        ],
+        "essential": true,
+        "source": "community",
+        "note": "A tap, not a swipe. Keyboard: [[Cmd + Backspace]] in any app."
+       }
+      ]
+     },
+     {
+      "group": "Tablet mode (DeX off): three fingers",
+      "items": [
+       {
+        "action": "Back",
+        "keys": [
+         "gesture: 3-finger swipe left or right"
+        ],
+        "essential": false,
+        "source": "community",
+        "note": "These are Android's own trackpad gestures, not Samsung's, and they are not the DeX ones above."
+       },
+       {
+        "action": "Home",
+        "keys": [
+         "gesture: 3-finger swipe up"
+        ],
+        "essential": false,
+        "source": "community"
+       },
+       {
+        "action": "Recents",
+        "keys": [
+         "gesture: 3-finger swipe up and hold"
+        ],
+        "essential": false,
+        "source": "community"
+       }
+      ]
+     },
+     {
+      "group": "Go back with the trackpad",
+      "items": [
+       {
+        "action": "Back anywhere in the system",
+        "keys": [
+         "gesture: 3-finger tap",
+         "Cmd + Backspace"
+        ],
+        "essential": true,
+        "source": "community",
+        "note": "The tap is DeX; in tablet mode it becomes a 3-finger swipe sideways. The key always works."
+       },
+       {
+        "action": "Back a page in Chrome",
+        "keys": [
+         "Alt + Left"
+        ],
+        "essential": false,
+        "source": "official",
+        "note": "Page history inside the browser, which is not the same as the system Back."
+       },
+       {
+        "action": "Forward a page in Chrome",
+        "keys": [
+         "Alt + Right"
+        ],
+        "essential": false,
+        "source": "official"
+       }
+      ]
+     }
+    ]
+   }
   }
  },
  "comparison": {
@@ -8083,33 +8858,6 @@ footer .wrap { display: grid; gap: 6px; }
    },
    {
     "category": "Workspaces & desktops",
-    "action": "Switch workspace with the touchpad",
-    "hyprland": {
-     "keys": [
-      "gesture: 3-finger horizontal swipe"
-     ]
-    },
-    "windows": {
-     "keys": [
-      "gesture: 4-finger swipe left or right"
-     ],
-     "note": "Three fingers switch apps by default. You can set three fingers to switch desktops (see the Windows setup)."
-    },
-    "macos": {
-     "keys": [
-      "gesture: 3- or 4-finger swipe left or right"
-     ],
-     "note": "Set three fingers in System Settings → Trackpad → More Gestures → Swipe between full-screen applications."
-    },
-    "dex": {
-     "keys": [],
-     "note": "No desktop gesture. Open Recents with a 3-finger swipe up, then swipe."
-    },
-    "essential": false,
-    "trap": "Windows and DeX: a 3-finger horizontal swipe switches apps, not desktops."
-   },
-   {
-    "category": "Workspaces & desktops",
     "action": "See all windows and desktops",
     "hyprland": {
      "keys": [],
@@ -8158,6 +8906,275 @@ footer .wrap { display: grid; gap: 6px; }
       "gesture: open Recents, then tap Add desktop (monitor with a plus)"
      ],
      "note": "Up to four desktops."
+    },
+    "essential": false
+   },
+   {
+    "category": "Trackpad",
+    "action": "Right-click with the trackpad",
+    "hyprland": {
+     "keys": [
+      "gesture: 2-finger tap"
+     ],
+     "note": "`tap-to-click = true`: 1, 2 and 3 fingers are left, right and middle click."
+    },
+    "windows": {
+     "keys": [
+      "gesture: 2-finger tap"
+     ],
+     "note": "Or press the lower-right corner of the pad."
+    },
+    "macos": {
+     "keys": [
+      "gesture: 2-finger click or tap"
+     ]
+    },
+    "dex": {
+     "keys": [
+      "gesture: 2-finger tap"
+     ]
+    },
+    "essential": true
+   },
+   {
+    "category": "Trackpad",
+    "action": "Scroll",
+    "hyprland": {
+     "keys": [
+      "gesture: 2-finger drag"
+     ],
+     "note": "`natural_scroll = true`: the content follows your fingers."
+    },
+    "windows": {
+     "keys": [
+      "gesture: 2-finger slide"
+     ],
+     "note": "Ships the other way round."
+    },
+    "macos": {
+     "keys": [
+      "gesture: 2-finger slide"
+     ],
+     "note": "Natural scrolling is the default here."
+    },
+    "dex": {
+     "keys": [
+      "gesture: 2-finger drag"
+     ]
+    },
+    "essential": true,
+    "trap": "Only Windows scrolls the opposite way to your config. Fix it once: Settings → Bluetooth & devices → Touchpad → Scrolling direction → Down motion scrolls up."
+   },
+   {
+    "category": "Trackpad",
+    "action": "Zoom in a page",
+    "hyprland": {
+     "keys": [
+      "gesture: pinch or spread"
+     ],
+     "note": "The app handles it; Firefox does."
+    },
+    "windows": {
+     "keys": [
+      "gesture: pinch or spread"
+     ]
+    },
+    "macos": {
+     "keys": [
+      "gesture: pinch or spread"
+     ]
+    },
+    "dex": {
+     "keys": [
+      "gesture: pinch or spread"
+     ],
+     "note": "Not every Android app accepts it."
+    },
+    "essential": false
+   },
+   {
+    "category": "Trackpad",
+    "action": "Middle-click with the trackpad",
+    "hyprland": {
+     "keys": [
+      "gesture: 3-finger tap"
+     ],
+     "note": "Pastes the selection, or opens a link in a new tab."
+    },
+    "windows": {
+     "keys": [
+      "gesture: 3-finger tap"
+     ],
+     "note": "Opens search by default. Set Three-finger gestures → Taps → Middle mouse button."
+    },
+    "macos": {
+     "keys": [],
+     "note": "No middle click on the trackpad. Three fingers look up a word instead."
+    },
+    "dex": {
+     "keys": [],
+     "note": "A 3-finger tap is Back here."
+    },
+    "essential": false
+   },
+   {
+    "category": "Trackpad",
+    "action": "Show all open windows",
+    "hyprland": {
+     "keys": [],
+     "note": "No overview and no gesture. The hyprexpo plug-in is optional."
+    },
+    "windows": {
+     "keys": [
+      "gesture: 3-finger swipe up"
+     ],
+     "note": "The same view as [[Win + Tab]]."
+    },
+    "macos": {
+     "keys": [
+      "gesture: 3- or 4-finger swipe up"
+     ],
+     "note": "Mission Control. The finger count is the one set in Trackpad → More Gestures."
+    },
+    "dex": {
+     "keys": [
+      "gesture: 3-finger swipe up"
+     ],
+     "note": "Recents, which is also where the DeX desktops are."
+    },
+    "essential": true
+   },
+   {
+    "category": "Trackpad",
+    "action": "Show the desktop or Home",
+    "hyprland": {
+     "keys": [],
+     "note": "A workspace is already a desktop."
+    },
+    "windows": {
+     "keys": [
+      "gesture: 3-finger swipe down"
+     ]
+    },
+    "macos": {
+     "keys": [
+      "gesture: spread your thumb and three fingers"
+     ]
+    },
+    "dex": {
+     "keys": [
+      "gesture: 3-finger swipe down"
+     ],
+     "note": "Home, not a desktop."
+    },
+    "essential": false
+   },
+   {
+    "category": "Trackpad",
+    "action": "Switch apps with the trackpad",
+    "hyprland": {
+     "keys": [],
+     "note": "No gesture. [[Alt + Tab]] is an optional bind."
+    },
+    "windows": {
+     "keys": [
+      "gesture: 3-finger swipe left or right"
+     ]
+    },
+    "macos": {
+     "keys": [],
+     "note": "No gesture: [[Cmd + Tab]]. Three fingers change Space instead."
+    },
+    "dex": {
+     "keys": [
+      "gesture: 3-finger swipe left or right"
+     ]
+    },
+    "essential": false,
+    "trap": "Three fingers sideways means apps on Windows and DeX, but workspaces on Hyprland and macOS."
+   },
+   {
+    "category": "Trackpad",
+    "action": "Switch workspace with the touchpad",
+    "hyprland": {
+     "keys": [
+      "gesture: 3-finger horizontal swipe"
+     ]
+    },
+    "windows": {
+     "keys": [
+      "gesture: 4-finger swipe left or right"
+     ],
+     "note": "Three fingers switch apps by default. You can set three fingers to switch desktops (see the Windows setup)."
+    },
+    "macos": {
+     "keys": [
+      "gesture: 3- or 4-finger swipe left or right"
+     ],
+     "note": "Set three fingers in System Settings → Trackpad → More Gestures → Swipe between full-screen applications."
+    },
+    "dex": {
+     "keys": [],
+     "note": "No desktop gesture. Open Recents with a 3-finger swipe up, then swipe."
+    },
+    "essential": false,
+    "trap": "Windows and DeX: a 3-finger horizontal swipe switches apps, not desktops."
+   },
+   {
+    "category": "Trackpad",
+    "action": "Go back with the trackpad",
+    "hyprland": {
+     "keys": [
+      "gesture: 2-finger swipe left"
+     ],
+     "note": "Firefox on Wayland, with no setup. Chromium has no swipe."
+    },
+    "windows": {
+     "keys": [
+      "gesture: 2-finger swipe left"
+     ],
+     "note": "Browsers only; the browser does it, not Windows."
+    },
+    "macos": {
+     "keys": [
+      "gesture: 2-finger swipe left"
+     ],
+     "note": "System-wide: browsers, Finder, System Settings."
+    },
+    "dex": {
+     "keys": [
+      "gesture: 3-finger tap"
+     ],
+     "note": "A tap. In tablet mode it is a 3-finger swipe sideways."
+    },
+    "essential": true,
+    "trap": "DeX is the odd one out: a tap, not a swipe, and the tablet-mode gesture is different again."
+   },
+   {
+    "category": "Trackpad",
+    "action": "Move a window with the trackpad",
+    "hyprland": {
+     "keys": [
+      "gesture: Super + 1-finger drag"
+     ],
+     "note": "`bindm = $mainMod, mouse:272, movewindow`."
+    },
+    "windows": {
+     "keys": [
+      "gesture: drag the title bar"
+     ]
+    },
+    "macos": {
+     "keys": [
+      "gesture: drag the title bar",
+      "gesture: 3-finger drag"
+     ],
+     "note": "Three-finger drag has to be turned on in Accessibility."
+    },
+    "dex": {
+     "keys": [
+      "gesture: drag the top bar of the window"
+     ]
     },
     "essential": false
    },
@@ -9027,7 +10044,8 @@ footer .wrap { display: grid; gap: 6px; }
      ],
      "note": "[[Cmd + Backspace]] is the system Back and works in every app. [[Alt + Left]] works in Chrome."
     },
-    "essential": false
+    "essential": true,
+    "trap": "Hyprland and Windows share [[Alt + Left]]; macOS and DeX do not. On the trackpad it is a 2-finger swipe left everywhere except DeX, where it is a 3-finger tap."
    },
    {
     "category": "Browser tabs",
@@ -9801,7 +10819,7 @@ footer .wrap { display: grid; gap: 6px; }
   }
  },
  "missing": [],
- "verified": "October 2026"
+ "verified": "November 2026"
 }</script>
 <script>
 (function () {
@@ -9998,8 +11016,9 @@ footer .wrap { display: grid; gap: 6px; }
       add('setup', 'Configure', cfgHTML, 'Do these once. Tick each one when it is done; your ticks stay in this browser.');
     }
 
-    if (s.shortcuts && s.shortcuts.length) {
-      var scHTML = s.shortcuts.map(function (g) {
+    // One table per group. Used by both Shortcuts and Trackpad, so filtering works the same way.
+    function scGroupsHTML(groups) {
+      return (groups || []).map(function (g) {
         return '<div class="sc-group" data-group><p class="group-title">' + esc(g.group) + '</p><div class="scroller"><table class="sc"><thead><tr><th scope="col">Action</th><th scope="col">Keys</th><th scope="col">Note</th></tr></thead><tbody>' +
           (g.items || []).map(function (it) {
             var text = (it.action + ' ' + (it.keys || []).join(' ') + ' ' + (it.note || '')).toLowerCase();
@@ -10008,7 +11027,15 @@ footer .wrap { display: grid; gap: 6px; }
               '<td class="kc">' + keysHTML(it.keys, o.id) + '</td><td class="nt">' + inline(it.note || '', o.id) + '</td></tr>';
           }).join('') + '</tbody></table></div></div>';
       }).join('');
-      add('shortcuts', 'Shortcuts', scHTML + '<p class="empty" hidden>No shortcuts match.</p>', o.id === 'hyprland' ? 'Everything here comes from your own config files, plus the app defaults you use every day.' : 'Rows with a dot are the week-one set.');
+    }
+
+    if (s.shortcuts && s.shortcuts.length) {
+      add('shortcuts', 'Shortcuts', scGroupsHTML(s.shortcuts) + '<p class="empty" hidden>No shortcuts match.</p>', o.id === 'hyprland' ? 'Everything here comes from your own config files, plus the app defaults you use every day.' : 'Rows with a dot are the week-one set.');
+    }
+
+    if (s.trackpad && s.trackpad.groups && s.trackpad.groups.length) {
+      add('trackpad', 'Trackpad', scGroupsHTML(s.trackpad.groups) + '<p class="empty" hidden>No gestures match.</p>',
+        s.trackpad.intro ? inline(s.trackpad.intro, o.id) : 'Every gesture this pad understands.');
     }
 
     if (s.typing && s.typing.length) {
@@ -10105,8 +11132,11 @@ footer .wrap { display: grid; gap: 6px; }
         var n = 0; ul.querySelectorAll('.cfg').forEach(function (li) { var m = match(li); li.hidden = !m; if (m) n++; });
         ul.hidden = n === 0; var t = ul.previousElementSibling; if (t && t.classList.contains('group-title')) t.hidden = n === 0;
       });
-      var e = p.querySelector('#' + o.id + '-shortcuts .empty');
-      if (e) e.hidden = !!p.querySelector('.sc-group:not([hidden])');
+      ['shortcuts', 'trackpad'].forEach(function (k) {
+        var sec = p.querySelector('#' + o.id + '-' + k); if (!sec) return;
+        var e = sec.querySelector('.empty');
+        if (e) e.hidden = !!sec.querySelector('.sc-group:not([hidden])');
+      });
     });
   }
   q.addEventListener('input', filter);
